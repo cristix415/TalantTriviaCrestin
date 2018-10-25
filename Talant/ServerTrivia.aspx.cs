@@ -84,7 +84,7 @@ namespace Talant
                 _randomIntrebare = _listIntrebari[r];
                 allSockets.ToList().ForEach(s => s.Socket.Send(FormatMessageIntrebare(_randomIntrebare.Enunt)));
                 if (ss > 3)
-                    ii++;
+                    ;//   ii++;
 
             }
         }

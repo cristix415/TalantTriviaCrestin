@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" namespace="Talant" assembly="Talant">
+  <class name="Users" table="users" mutable="false">
+    <id name="Id" column="id" type="Int32">
+      <generator class="native" />
+    </id>
+    <property name="Nume" column="nume" type="String" />
+    <property name="Prenume" column="prenume" type="String" />
+    <property name="Adresa" column="adresa" type="String" />
+    <property name="Localitate" column="localitate" type="String" />
+    <property name="Judet" column="judet" type="String" />
+    <property name="Tara" column="tara" type="String" />
+    <property name="Username" column="username" type="String" />
+    <property name="Pwd" column="pwd" type="String" />
+
+  </class>
+</hibernate-mapping>

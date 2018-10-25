@@ -1,0 +1,44 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <script>
+        function call() {
+
+            //Lets create object for Event Source
+            //CReate object and intilize it with null
+            var eventobj = null;
+            //To check Event Source or server sent event are supported or not
+            if(typeof(EventSource)==undefined)
+            {
+                alert('Browser does not support Server Sent Event');
+            }
+            else
+            {
+                //alert(' this Browser  support Server Sent Event');
+
+                //Initilize object of EventSource with server page from server data will be sent
+                eventobj = new EventSource("Default.aspx");
+
+                //After successfull request for Default.aspx , the result return will be added in event argument
+
+                //onmessage is inbuilt function and executed when server sent data, now we are going to show data into HTML tag
+                eventobj.onmessage=function(event)
+                {
+                    document.getElementById('msgdata').innerHTML += event.data;
+                }
+
+            }
+        }
+
+
+    </script>
+</head>
+<body>
+    <script>
+        call()
+    </script>
+    <input type="button"  name="name" value="Call Server Sent " onclick="call()"/>
+    <p id="msgdata"></p>
+</body>
+</html>

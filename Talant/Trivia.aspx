@@ -28,6 +28,7 @@
                 ws.onmessage = function (evt) {
                     //   alert(evt.data);
                     inc.innerHTML += evt.data + '<br/>';
+                    inc.scrollTop = inc.scrollHeight;
                 };
                 // when the connection is established, this method is called
                 ws.onopen = function () {
@@ -66,29 +67,33 @@
     </head>
 
     <body>
-        <asp:Label ID="labelNume" runat="server">aaa</asp:Label>
+
         <br />
         <br />
         <br />
         <input type="button" id="logIn" value="Log" onclick="start();" />
         <input id="userr" placeholder="username" />
-
         <input type="button" id="logOut" value="LogOut" onclick="start.cl;" />
         <br />
         <br />
-        <form id="sendForm">
-
-
-            <input id="sendText" placeholder="Text to send" />
-
-            <input id="trimite" type="submit" value="Trimite" />
-        </form>
-        <pre id="incomming"></pre>
-
-
-
+        <table>
+            <tr>
+                <td style="height: 1px; width:1px; background-color: antiquewhite;">
+                    <div id="incomming" style="overflow-y: scroll; width:450px; height: 350px;"></div>
+                </td>
+                <td style="height: 1px; width:1px; background-color: azure">
+                      <div id="conectati" style="overflow-y: scroll; width:150px; height: 350px;"></div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input id="sendText" placeholder="Text to send" />
+                    <input id="trimite" type="submit" value="Trimite" />
+                </td>
+            </tr>
+        </table>
 
     </body>
     </html>
 
-    </asp:Content>
+</asp:Content>

@@ -82,7 +82,7 @@ namespace Talant
                 Intrebare intreb = new Intrebare { Enunt = "Ce??", Raspuns = "da" };
                 _listIntrebari.Add(intreb);
                 _randomIntrebare = _listIntrebari[r];
-                allSockets.ToList().ForEach(s => s.Socket.Send(_randomIntrebare.Enunt));
+                allSockets.ToList().ForEach(s => s.Socket.Send(FormatMessageIntrebare(_randomIntrebare.Enunt)));
                 if (ss > 3)
                     ii++;
 
@@ -100,10 +100,20 @@ namespace Talant
             return detrimis;
 
         }
+        private string FormatMessageIntrebare(string mesaj)
+        {
+                       
+            string detrimis = "<span style = \"display:table; margin: 0 auto;\">" +
+                    mesaj;
+
+            return detrimis;
+
+        }
         static Color GetRandomColor()
         {
             var random = new Random();
             return colors[random.Next(colors.Length)];
         }
+
     }
 }

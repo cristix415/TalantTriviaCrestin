@@ -14,6 +14,7 @@
                 var logIn = document.getElementById('logIn');
                 var input = document.getElementById('sendText');
                 var userName = document.getElementById('userr');
+                var conectati = document.getElementById('conectati');
                 if (window.ws != null)
                     ws.close();
                 logOut.disabled = true;
@@ -22,26 +23,39 @@
                 // create a new websocket and connect
                 //  window.ws = new wsImpl('ws://topsecretlog-001-site1.dtempurl.com:8083/' + userName.value);
                 window.ws = new wsImpl('ws://127.0.0.1:8181/' + userName.value);
-                alert(ws.url);
+                //alert(ws.url);
                 //    ws.send("000"+userName);
                 // when data is comming from the server, this metod is called
                 ws.onmessage = function (evt) {
-                    //   alert(evt.data);
-                    inc.innerHTML += evt.data + '<br/>';
-                    inc.scrollTop = inc.scrollHeight;
-                };
-                // when the connection is established, this method is called
-                ws.onopen = function () {
-                    inc.innerHTML += '.. connection open<br/>';
-                    logIn.disabled = true;
-                    logOut.disabled = false;
+                 
+                    var mm = evt.data.charAt(0);                                 
+                    
+                    if (mm == '[') {
+                        var obj = JSON.parse(evt.data)
+                        conectati.innerHTML = "";
+                        for (var i in obj) {                           
+                            conectati.innerHTML += obj[i].Username + "<br>";
+                        }
+                    }
+                    else {
+                       // alert(evt.data);
+                        inc.innerHTML += evt.data + '<br/>';
+                        inc.scrollTop = inc.scrollHeight;
+                        //}
+                    };
+                    // when the connection is established, this method is called
+                    ws.onopen = function () {
+                        inc.innerHTML += '.. connection open<br/>';
+                        logIn.disabled = true;
+                        logOut.disabled = false;
 
-                };
-                // when the connection is closed, this method is called
-                ws.onclose = function () {
-                    inc.innerHTML += '.. connection closed<br/>';
-                    logIn.disabled = false;
-                    logOut.disabled = true;
+                    };
+                    // when the connection is closed, this method is called
+                    ws.onclose = function () {
+                        inc.innerHTML += '.. connection closed<br/>';
+                        logIn.disabled = false;
+                        logOut.disabled = true;
+                    }
                 }
 
                 trimite.addEventListener('click', function (e) {
@@ -78,11 +92,11 @@
         <br />
         <table>
             <tr>
-                <td style="height: 1px; width:1px; background-color: antiquewhite;">
-                    <div id="incomming" style="overflow-y: scroll; width:450px; height: 350px;"></div>
+                <td style="height: 1px; width: 1px; background-color: antiquewhite;">
+                    <div id="incomming" style="overflow-y: scroll; width: 450px; height: 350px;"></div>
                 </td>
-                <td style="height: 1px; width:1px; background-color: azure">
-                      <div id="conectati" style="overflow-y: scroll; width:150px; height: 350px;"></div>
+                <td style="height: 1px; width: 1px; background-color: azure">
+                    <div id="conectati" style="overflow-y: scroll; width: 150px; height: 350px;"></div>
                 </td>
             </tr>
             <tr>

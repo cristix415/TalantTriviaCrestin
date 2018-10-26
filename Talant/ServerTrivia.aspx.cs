@@ -1,4 +1,5 @@
 ﻿using Fleck;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -31,7 +32,7 @@ namespace Talant
 
 
             var server = new WebSocketServer("ws://127.0.0.1:8181");
-
+            PuneAltaIntrebare();
 
             int raspuns = 0;
             server.Start(socket =>
@@ -39,56 +40,68 @@ namespace Talant
                 //        HttpContext.Current.Response.Redirect("http://www.google.com");
                 socket.OnOpen = () =>
                 {
-                 //   System.Diagnostics.Debugger.Launch();
+                    //   System.Diagnostics.Debugger.Launch();
                     var user = socket.ConnectionInfo.Path.Remove(0, 1);
 
                     Profil conexiune = new Profil { Socket = socket, UserName = user, Color = GetRandomColor() };
                     //    ClientScript.RegisterStartupScript(this.GetType(), "alert(conexiune.UserName)",
                     //                   "alert(conexiune.UserName)", true);
                     allSockets.Add(conexiune);
-                    allSockets.ToList().ForEach(s => s.Socket.Send(conexiune.UserName + " a intrat."));
+
+                    List<Users> listUser = new List<Users>();
+                    foreach (var el in allSockets)
+                        listUser.Add(new Users { Username = el.UserName });
+
+                    //allSockets.ToList().ForEach(s => s.Socket.Send(conexiune.UserName + " a intrat."));
+                    var jj = JsonConvert.SerializeObject(listUser);
+                    allSockets.ToList().ForEach(s => s.Socket.Send(JsonConvert.SerializeObject(listUser)));
+                    socket.Send(FormatMessageIntrebare(_randomIntrebare.Enunt));
                 };
                 socket.OnClose = () =>
                 {
-                    
+
                     System.Diagnostics.Debug.WriteLine("Close!");
                     var conexiune = allSockets.Where(s => s.Socket == socket).FirstOrDefault();
                     allSockets.Remove(conexiune);
+                    List<Users> listUser = new List<Users>();
+                    foreach (var el in allSockets)
+                        listUser.Add(new Users { Username = el.UserName });
+                    allSockets.ToList().ForEach(s => s.Socket.Send(JsonConvert.SerializeObject(listUser)));
+
                     allSockets.ToList().ForEach(s => s.Socket.Send(conexiune.UserName + " a iesit."));
                 };
                 socket.OnMessage = message =>
                 {
-                   
+
                     Mesaj mesaj = new JavaScriptSerializer().Deserialize<Mesaj>(message);
                     System.Diagnostics.Debug.WriteLine(message);
                     allSockets.ToList().ForEach(s => s.Socket.Send(FormatMessage(mesaj)));
                     if (mesaj.Content == _randomIntrebare.Raspuns)
                     {
                         allSockets.ToList().ForEach(s => s.Socket.Send(mesaj.User + "WIN!!!"));
+                        PuneAltaIntrebare();
                     }
                 };
 
             });
-            var ii = 0;
-            var ss = 0;
-            while (ii == 0)
-            {
-                ss++;
-                //  System.Diagnostics.Debugger.Launch();
-                //  Console.sh
-                System.Threading.Thread.Sleep(5000);
-                Random rnd = new Random();
-                int r = rnd.Next(_listIntrebari.Count);
-                Intrebare intreb = new Intrebare { Enunt = "Ce??", Raspuns = "da" };
-                _listIntrebari.Add(intreb);
-                _randomIntrebare = _listIntrebari[r];
-                allSockets.ToList().ForEach(s => s.Socket.Send(FormatMessageIntrebare(_randomIntrebare.Enunt)));
-                if (ss > 3)
-                    ;//   ii++;
-
-            }
         }
+        private void PuneAltaIntrebare()
+        {
+            //  System.Diagnostics.Debugger.Launch();
+            //  Console.sh
+            //        System.Threading.Thread.Sleep(5000);
+            Random rnd = new Random();
+            int r = rnd.Next(_listIntrebari.Count);
+            Intrebare intreb = new Intrebare { Enunt = "Ce??", Raspuns = "da" };
+            _listIntrebari.Add(intreb);
+            _randomIntrebare = _listIntrebari[r];
+            allSockets.ToList().ForEach(s => s.Socket.Send(FormatMessageIntrebare(_randomIntrebare.Enunt)));
+            //      if (ss > 3)
+            ;//   ii++;
 
+
+
+        }
         private string FormatMessage(Mesaj mesaj)
         {
             var profil = allSockets.Where(s => s.UserName == mesaj.User).FirstOrDefault();
@@ -102,7 +115,7 @@ namespace Talant
         }
         private string FormatMessageIntrebare(string mesaj)
         {
-                       
+
             string detrimis = "<span style = \"display:table; margin: 0 auto;\">" +
                     mesaj;
 
